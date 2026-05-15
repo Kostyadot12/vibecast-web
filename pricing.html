@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Тарифы — ВайбКаст</title>
+<meta name="description" content="Тарифы ВайбКаст — голосовая диктовка для Mac на русском. От бесплатного Free до безлимитного Pro Plus." />
+<link rel="icon" type="image/png" href="assets/vibeflow-logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<style>
+  .price-hero{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 144px 44px 40px;
+    text-align: center;
+  }
+  @media (max-width: 760px){ .price-hero{ padding: 116px 22px 28px; } }
+  .price-hero .eyebrow{ justify-content: center; margin-bottom: 30px; }
+  .price-hero h1{
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(44px, 7vw, 84px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
+    color: var(--ink);
+  }
+  .price-hero h1 em{
+    font-style: italic;
+    color: var(--coral-deep);
+    font-weight: 400;
+  }
+  .price-hero p{
+    max-width: 540px;
+    margin: 0 auto;
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--warm);
+  }
+
+  .price-tiers{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 44px 60px;
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  @media (max-width: 1100px){ .price-tiers{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px){ .price-tiers{ grid-template-columns: 1fr; padding: 30px 22px 50px; } }
+
+  .tier{
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: var(--radius-l);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--shadow-1);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease;
+  }
+  .tier:hover{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-2);
+  }
+  .tier.featured{
+    background:
+      radial-gradient(60% 50% at 100% 0%, rgba(232, 191, 172, 0.30) 0%, transparent 60%),
+      radial-gradient(50% 40% at 0% 100%, rgba(194, 103, 74, 0.15) 0%, transparent 60%),
+      var(--surface);
+    border-color: var(--coral-soft);
+    box-shadow: var(--shadow-card);
+  }
+  .tier-name{
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .tier-badge{
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--coral-deep);
+    color: var(--paper);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .tier-price{
+    display: flex; align-items: baseline; gap: 4px;
+    margin-top: 4px;
+  }
+  .tier-price .num{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(46px, 5vw, 68px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+  }
+  .tier.featured .tier-price .num{ color: var(--coral-deep); }
+  .tier-price .currency{
+    color: var(--muted);
+    font-family: var(--display);
+    font-size: 26px;
+    font-weight: 300;
+  }
+  .tier-period{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  .tier-desc{
+    color: var(--warm);
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin: 0;
+  }
+  .tier-bullets{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+  .tier-bullets li{
+    position: relative;
+    padding-left: 22px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    font-family: var(--body);
+  }
+  .tier-bullets li::before{
+    content: '';
+    position: absolute;
+    left: 0; top: 7px;
+    width: 11px; height: 6px;
+    border-left: 1.6px solid var(--coral-deep);
+    border-bottom: 1.6px solid var(--coral-deep);
+    transform: rotate(-45deg);
+  }
+  .tier-cta{
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .compare-note{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 30px 44px 80px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+  }
+  .compare-note .quoted{
+    font-family: var(--display);
+    font-style: italic;
+    color: var(--warm);
+    letter-spacing: 0;
+    font-size: 13.5px;
+  }
+</style>
+</head>
+<body>
+
+<!-- бренд-эмблема -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="vc-mark" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="19" fill="#2A241B"/>
+      <circle cx="20" cy="20" r="19" fill="none" stroke="#C2674A" stroke-opacity=".35" stroke-width="1"/>
+      <g stroke="#F3E6CF" stroke-linecap="round" stroke-width="1.6">
+        <line x1="11" y1="20" x2="11" y2="20"/>
+        <line x1="14" y1="17" x2="14" y2="23"/>
+        <line x1="17" y1="14" x2="17" y2="26"/>
+        <line x1="20" y1="11" x2="20" y2="29" stroke="#E8BFAC"/>
+        <line x1="23" y1="15" x2="23" y2="25"/>
+        <line x1="26" y1="18" x2="26" y2="22"/>
+        <line x1="29" y1="20" x2="29" y2="20"/>
+      </g>
+      <circle cx="30.5" cy="11.5" r="2.2" fill="#C2674A"/>
+    </symbol>
+  </defs>
+</svg>
+
+<nav class="nav">
+  <a class="nav-brand" href="index.html">
+    <svg class="mark" viewBox="0 0 40 40"><use href="#vc-mark"/></svg>
+    <span class="name">Вайб<em>Каст</em></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Главная</a>
+    <a href="pricing.html">Тарифы</a>
+    <a href="https://github.com/Kostyadot12/vibecast" target="_blank" rel="noopener">GitHub</a>
+  </div>
+  <div class="nav-right">
+    <a class="nav-signin" href="login.html">Войти</a>
+    <a class="nav-cta" href="register.html">Попробовать бесплатно</a>
+  </div>
+</nav>
+
+<main>
+  <section class="price-hero">
+    <div class="eyebrow fade d1">
+      <span class="pulse"></span>
+      <span>Тарифы · Без сюрпризов</span>
+    </div>
+    <h1 class="fade d2">Простой выбор.<br/><em>Без сюрпризов.</em></h1>
+    <p class="fade d3">
+      Начни бесплатно — 50 диктовок в месяц без карты. Когда понадобится больше, выбери план под свой ритм.
+    </p>
+  </section>
+
+  <section class="price-tiers">
+    <!-- Free -->
+    <article class="tier fade d2">
+      <div class="tier-name">Free</div>
+      <div class="tier-price">
+        <span class="num">0</span>
+        <span class="currency">₽</span>
+      </div>
+      <div class="tier-period">навсегда</div>
+      <p class="tier-desc">Попробовать ВайбКаст и понять, насколько голосом удобнее печатать.</p>
+      <ul class="tier-bullets">
+        <li>50 диктовок в месяц</li>
+        <li>Распознавание на русском</li>
+        <li>Базовая обработка пунктуации</li>
+        <li>Свой словарь имён и терминов</li>
+      </ul>
+      <a class="btn-secondary tier-cta" href="register.html">Начать бесплатно</a>
+    </article>
+
+    <!-- Pro Lite -->
+    <article class="tier fade d3">
+      <div class="tier-name">Pro Lite</div>
+      <div class="tier-price">
+        <span class="num">399</span>
+        <span class="currency">₽</span>
+      </div>
+      <div class="tier-period">в месяц</div>
+      <p class="tier-desc">На повседневную переписку, заметки и быстрые ответы в почте.</p>
+      <ul class="tier-bullets">
+        <li>1 000 диктовок в месяц</li>
+        <li>Контекст активного приложения</li>
+        <li>Smart-словарь с авто-предложениями</li>
+        <li>История диктовок без срока</li>
+      </ul>
+      <a class="btn-secondary tier-cta" data-checkout="PRO_LITE" href="register.html">Выбрать Pro Lite</a>
+    </article>
+
+    <!-- Pro — featured -->
+    <article class="tier featured fade d4">
+      <div class="tier-name">
+        Pro
+        <span class="tier-badge">Популярный</span>
+      </div>
+      <div class="tier-price">
+        <span class="num">799</span>
+        <span class="currency">₽</span>
+      </div>
+      <div class="tier-period">в месяц</div>
+      <p class="tier-desc">Для активной работы голосом — встречи, переписки, документация.</p>
+      <ul class="tier-bullets">
+        <li>3 000 диктовок в месяц</li>
+        <li>Всё что в Pro Lite</li>
+        <li>Стилевые пресеты под приложение</li>
+        <li>Режим редактирования голосом</li>
+        <li>Приоритетная поддержка</li>
+      </ul>
+      <a class="btn-primary tier-cta" data-checkout="PRO" href="register.html">Выбрать Pro</a>
+    </article>
+
+    <!-- Pro Plus -->
+    <article class="tier fade d5">
+      <div class="tier-name">Pro Plus</div>
+      <div class="tier-price">
+        <span class="num">1&thinsp;490</span>
+        <span class="currency">₽</span>
+      </div>
+      <div class="tier-period">в месяц</div>
+      <p class="tier-desc">Безлимит и лучшая LLM-обработка русского через YandexGPT Pro.</p>
+      <ul class="tier-bullets">
+        <li>Безлимитные диктовки</li>
+        <li>YandexGPT Pro 5.1</li>
+        <li>Всё что в Pro</li>
+        <li>Раннее тестирование новых фич</li>
+      </ul>
+      <a class="btn-secondary tier-cta" data-checkout="PRO_PLUS" href="register.html">Выбрать Pro Plus</a>
+    </article>
+  </section>
+
+  <p class="compare-note fade d6">
+    Wispr Flow и Superwhisper берут $12–15 в месяц.<br/>
+    <span class="quoted">ВайбКаст — российский аналог. Серверы Яндекс.Облака, оплата через Робокассу, чек на email.</span><br/>
+    Подписка отменяется в один клик в личном кабинете.
+  </p>
+</main>
+
+<footer class="foot">
+  <div>ВайбКаст · 2026</div>
+  <div class="foot-links">
+    <a href="index.html">Главная</a>
+    <a href="login.html">Войти</a>
+    <a href="https://github.com/Kostyadot12/vibecast" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</footer>
+
+<script src="assets/api.js"></script>
+<script>
+  document.querySelectorAll('[data-checkout]').forEach((el) => {
+    el.addEventListener('click', async (e) => {
+      const planId = el.dataset.checkout;
+      if (!VF.auth.isAuthenticated()) {
+        e.preventDefault();
+        sessionStorage.setItem('vf_pending_plan', planId);
+        window.location.href = 'register.html?plan=' + planId;
+        return;
+      }
+      e.preventDefault();
+      try {
+        el.textContent = 'Создаём платёж…';
+        const res = await VF.startCheckout(planId);
+        window.location.href = res.checkoutUrl;
+      } catch (err) {
+        VF.showToast(err.message, 'danger');
+        el.textContent = 'Попробовать ещё';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+/* ============================================================
+   ВайбКаст Web — клиент API.
+   - Хранит access/refresh токены в localStorage.
+   - Автоматически рефрешит access перед запросом если он почти истёк.
+   - Показывает тосты при ошибках.
+   ============================================================ */
+
+// Авто-детект окружения:
+//   - localhost / 127.0.0.1 → локальный бэкенд для разработки
+//   - всё остальное (GitHub Pages, прод-домен) → публичный api.vibeflow.app
+// При необходимости можно переопределить window.VF_API_BASE = '...'
+// в инлайн-скрипте перед подключением api.js.
+const API_BASE = window.VF_API_BASE || (
+  ['localhost', '127.0.0.1'].includes(window.location.hostname)
+    ? 'http://localhost:3000'
+    : 'https://api.vibeflow.app'
+);
+const STORAGE = {
+  access:  'vf_access_token',
+  refresh: 'vf_refresh_token',
+  user:    'vf_user',
+};
+
+const auth = {
+  get accessToken()  { return localStorage.getItem(STORAGE.access);  },
+  get refreshToken() { return localStorage.getItem(STORAGE.refresh); },
+  get user()         {
+    try { return JSON.parse(localStorage.getItem(STORAGE.user) || 'null'); }
+    catch { return null; }
+  },
+  isAuthenticated()  { return !!this.accessToken; },
+  save(accessToken, refreshToken, user) {
+    if (accessToken)  localStorage.setItem(STORAGE.access,  accessToken);
+    if (refreshToken) localStorage.setItem(STORAGE.refresh, refreshToken);
+    if (user)         localStorage.setItem(STORAGE.user,    JSON.stringify(user));
+  },
+  clear() {
+    localStorage.removeItem(STORAGE.access);
+    localStorage.removeItem(STORAGE.refresh);
+    localStorage.removeItem(STORAGE.user);
+  },
+};
+
+function showToast(message, variant = 'info', ttl = 3500) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (variant === 'danger' ? ' danger' : '');
+  t.textContent = message;
+  document.body.appendChild(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .2s ease';
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 220);
+  }, ttl);
+}
+
+async function refreshAccess() {
+  const refreshToken = auth.refreshToken;
+  if (!refreshToken) throw new Error('no_refresh_token');
+
+  const resp = await fetch(`${API_BASE}/auth/refresh`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+  });
+  if (!resp.ok) {
+    auth.clear();
+    throw new Error('refresh_failed');
+  }
+  const { accessToken } = await resp.json();
+  localStorage.setItem(STORAGE.access, accessToken);
+  return accessToken;
+}
+
+/**
+ * Универсальный fetch к нашему API с Bearer-токеном.
+ * При 401 пробует один раз обновить access и повторить запрос.
+ */
+async function apiFetch(path, options = {}) {
+  const headers = new Headers(options.headers || {});
+  if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
+  }
+  const token = auth.accessToken;
+  if (token) headers.set('Authorization', `Bearer ${token}`);
+
+  let resp = await fetch(`${API_BASE}${path}`, { ...options, headers });
+
+  // Token expired? Попробуем рефрешнуть и повторить.
+  if (resp.status === 401 && auth.refreshToken) {
+    try {
+      const newAccess = await refreshAccess();
+      headers.set('Authorization', `Bearer ${newAccess}`);
+      resp = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    } catch {
+      // refresh не сработал — попадаем в ветку «не авторизован» ниже.
+    }
+  }
+
+  return resp;
+}
+
+async function register(email, password) {
+  const resp = await fetch(`${API_BASE}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg =
+      data?.error === 'email_taken'      ? 'Этот email уже зарегистрирован' :
+      data?.error === 'validation_error' ? friendlyValidationMessage(data.issues) :
+      data?.message || 'Не удалось зарегистрироваться';
+    throw new Error(msg);
+  }
+  auth.save(data.accessToken, data.refreshToken, data.user);
+  return data;
+}
+
+async function login(email, password) {
+  const resp = await fetch(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg = data?.message || 'Неверный email или пароль';
+    throw new Error(msg);
+  }
+  auth.save(data.accessToken, data.refreshToken, data.user);
+  return data;
+}
+
+async function logout() {
+  const refreshToken = auth.refreshToken;
+  // Best-effort: даже если запрос упал, локально всё стираем.
+  if (refreshToken) {
+    try {
+      await fetch(`${API_BASE}/auth/logout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken }),
+      });
+    } catch {}
+  }
+  auth.clear();
+}
+
+async function me() {
+  const resp = await apiFetch('/me');
+  if (!resp.ok) throw new Error('not_authenticated');
+  return resp.json();
+}
+
+async function plans() {
+  const resp = await fetch(`${API_BASE}/billing/plans`);
+  if (!resp.ok) throw new Error('plans_failed');
+  return resp.json();
+}
+
+async function startCheckout(planId) {
+  const resp = await apiFetch('/billing/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ planId }),
+  });
+  if (!resp.ok) {
+    const data = await resp.json().catch(() => ({}));
+    throw new Error(data?.message || 'Не удалось создать платёж');
+  }
+  return resp.json();
+}
+
+async function cancelSubscription() {
+  const resp = await apiFetch('/billing/cancel', { method: 'POST' });
+  if (!resp.ok) {
+    const data = await resp.json().catch(() => ({}));
+    throw new Error(data?.message || 'Не удалось отменить подписку');
+  }
+  return resp.json();
+}
+
+function friendlyValidationMessage(issues) {
+  if (!Array.isArray(issues) || !issues.length) return 'Проверьте поля формы';
+  const first = issues[0];
+  const field = Array.isArray(first.path) ? first.path.join('.') : '';
+  const fieldRu = ({
+    email:    'Email',
+    password: 'Пароль',
+  })[field] || field;
+  return fieldRu ? `${fieldRu}: ${first.message}` : first.message;
+}
+
+// Экспорт для inline-скриптов на страницах.
+window.VF = {
+  auth,
+  showToast,
+  register,
+  login,
+  logout,
+  me,
+  plans,
+  startCheckout,
+  cancelSubscription,
+};
