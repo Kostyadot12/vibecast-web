@@ -7,13 +7,13 @@
 
 // Авто-детект окружения:
 //   - localhost / 127.0.0.1 → локальный бэкенд для разработки
-//   - всё остальное (GitHub Pages, прод-домен) → публичный api.vibeflow.app
+//   - всё остальное (прод-домен) → backend на том же домене под /api/
 // При необходимости можно переопределить window.VF_API_BASE = '...'
 // в инлайн-скрипте перед подключением api.js.
 const API_BASE = window.VF_API_BASE || (
   ['localhost', '127.0.0.1'].includes(window.location.hostname)
     ? 'http://localhost:3000'
-    : 'https://api.vibeflow.app'
+    : window.location.origin + '/api'
 );
 const STORAGE = {
   access:  'vf_access_token',
