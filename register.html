@@ -132,8 +132,15 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Создаём…';
     try {
-      await VF.register(email, password);
-      window.location.replace('account.html?welcome=1');
+      const result = await VF.register(email, password);
+      // Backend теперь возвращает { needsVerification: true, email } — ведём
+      // на verify.html где юзер вводит 6-значный код из почты.
+      if (result.needsVerification) {
+        window.location.replace(`verify.html?email=${encodeURIComponent(email)}`);
+      } else {
+        // На всякий: если backend почему-то выдал токены напрямую (legacy)
+        window.location.replace('account.html?welcome=1');
+      }
     } catch (err) {
       showError(err.message);
       submitBtn.disabled = false;

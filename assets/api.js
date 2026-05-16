@@ -113,7 +113,39 @@ async function register(email, password) {
       data?.message || 'Не удалось зарегистрироваться';
     throw new Error(msg);
   }
+  // Backend теперь возвращает { needsVerification: true, email }
+  // вместо токенов. Юзер должен пойти на verify.html и ввести код из письма.
+  return data;
+}
+
+async function verifyEmail(email, code) {
+  const resp = await fetch(`${API_BASE}/auth/verify-email`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, code }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    const msg = data?.message || 'Не удалось подтвердить код';
+    const err = new Error(msg);
+    err.code = data?.error;
+    err.remainingAttempts = data?.remainingAttempts;
+    throw err;
+  }
   auth.save(data.accessToken, data.refreshToken, data.user);
+  return data;
+}
+
+async function resendVerificationCode(email) {
+  const resp = await fetch(`${API_BASE}/auth/resend-code`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  const data = await resp.json().catch(() => ({}));
+  if (!resp.ok) {
+    throw new Error(data?.message || 'Не удалось отправить код');
+  }
   return data;
 }
 
@@ -125,6 +157,16 @@ async function login(email, password) {
   });
   const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {
+    // Если backend сказал needsVerification — это не ошибка а сигнал
+    // что аккаунт есть, но email не подтверждён. Кидаем особую ошибку
+    // которую UI может обработать редиректом на verify.html.
+    if (data?.needsVerification && data?.email) {
+      const err = new Error('Email не подтверждён');
+      err.code = 'email_not_verified';
+      err.needsVerification = true;
+      err.email = data.email;
+      throw err;
+    }
     const msg = data?.message || 'Неверный email или пароль';
     throw new Error(msg);
   }
@@ -196,6 +238,8 @@ window.VF = {
   auth,
   showToast,
   register,
+  verifyEmail,
+  resendVerificationCode,
   login,
   logout,
   me,

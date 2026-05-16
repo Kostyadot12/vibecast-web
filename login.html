@@ -107,6 +107,15 @@
       await VF.login(email, password);
       window.location.replace('account.html');
     } catch (err) {
+      // Если у юзера непроверенный email — backend кидает специальную ошибку,
+      // ведём на verify.html чтобы он ввёл код.
+      if (err.needsVerification && err.email) {
+        VF.showToast('Сначала подтверди email', 'info', 3000);
+        setTimeout(() =>
+          window.location.replace(`verify.html?email=${encodeURIComponent(err.email)}`),
+          800);
+        return;
+      }
       showError(err.message);
       submitBtn.disabled = false;
       submitBtn.textContent = 'Войти';
