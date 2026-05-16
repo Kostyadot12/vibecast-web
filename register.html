@@ -65,6 +65,14 @@
         <input type="password" id="password2" name="password2" required autocomplete="new-password" minlength="8" />
       </div>
 
+      <label class="consent-row">
+        <input type="checkbox" id="consent" required />
+        <span>
+          Я принимаю условия <a href="terms.html" target="_blank">договора-оферты</a> и согласен с
+          <a href="privacy.html" target="_blank">политикой конфиденциальности</a>.
+        </span>
+      </label>
+
       <div class="auth-submit-row">
         <button type="submit" class="btn-primary" id="submit-btn">
           Создать аккаунт
@@ -104,6 +112,10 @@
     const password = form.password.value;
     const password2 = form.password2.value;
 
+    if (!document.getElementById('consent').checked) {
+      showError('Чтобы создать аккаунт, нужно принять условия оферты и политику конфиденциальности');
+      return;
+    }
     if (!email || !password) {
       showError('Заполни email и пароль');
       return;
