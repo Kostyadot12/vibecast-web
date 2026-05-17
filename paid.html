@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Платёж прошёл — ВайбВиспр</title>
+  <meta http-equiv="refresh" content="0;url=account.html?paid=1" />
+  <script>
+    // Robokassa редиректит юзера на этот URL после успешной оплаты с GET-параметрами
+    // (InvId, OutSum, etc). Просто перенаправляем дальше на account.html — там
+    // уже есть логика показать toast и обновить план.
+    window.location.replace('/account.html?paid=1');
+  </script>
+</head>
+<body>
+  <p style="font-family: sans-serif; padding: 40px; color: #2A2520; background: #F5EFE3;">
+    Платёж прошёл. Перенаправляем в личный кабинет…
+  </p>
+</body>
+</html>

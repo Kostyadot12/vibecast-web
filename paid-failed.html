@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Платёж не прошёл — ВайбВиспр</title>
+  <meta http-equiv="refresh" content="0;url=account.html?paid=0" />
+  <script>
+    // Robokassa редиректит юзера сюда при отмене / ошибке оплаты. Перенаправляем
+    // на account.html с флагом неуспеха — там покажется toast и юзер увидит свой
+    // текущий план.
+    window.location.replace('/account.html?paid=0');
+  </script>
+</head>
+<body>
+  <p style="font-family: sans-serif; padding: 40px; color: #2A2520; background: #F5EFE3;">
+    Платёж не прошёл. Перенаправляем…
+  </p>
+</body>
+</html>
