@@ -300,6 +300,104 @@
   .cta-card .row{
     display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center;
   }
+
+  /* ─── Сравнение ─────────────────────────────────────────────────── */
+  .compare-table{
+    max-width: 920px;
+    margin: 0 auto;
+    border-top: 1px solid var(--hair, rgba(42,37,32,.10));
+  }
+  .compare-row{
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.1fr;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--hair, rgba(42,37,32,.10));
+    align-items: center;
+    font-size: 15px;
+    color: var(--ink2, #4B4339);
+    gap: 16px;
+  }
+  .compare-row > span:first-child{
+    font-weight: 500;
+    color: var(--ink, #2A2520);
+  }
+  .compare-head{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted, #88806F);
+    padding: 14px 24px;
+  }
+  .compare-head > span{ font-weight: 500; }
+  .compare-us{
+    color: var(--terra-deep, #8E3F2C);
+    font-weight: 600;
+  }
+  @media (max-width: 720px){
+    .compare-row{
+      grid-template-columns: 1fr 1fr;
+      padding: 14px 16px;
+      font-size: 14px;
+    }
+    .compare-row > span:first-child{
+      grid-column: 1 / -1;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted, #88806F);
+      margin-bottom: 4px;
+    }
+    .compare-head{ display: none; }
+  }
+
+  /* ─── FAQ ──────────────────────────────────────────────────────── */
+  .faq-list{
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .faq-item{
+    border-bottom: 1px solid var(--hair, rgba(42,37,32,.10));
+    padding: 4px 0;
+  }
+  .faq-item summary{
+    cursor: pointer;
+    padding: 20px 8px;
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-weight: 400;
+    color: var(--ink, #2A2520);
+    list-style: none;
+    position: relative;
+    padding-right: 36px;
+    transition: color 0.15s;
+  }
+  .faq-item summary::-webkit-details-marker{ display: none; }
+  .faq-item summary:hover{ color: var(--terra-deep, #8E3F2C); }
+  .faq-item summary::after{
+    content: '+';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    color: var(--muted, #88806F);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+    transition: transform 0.2s;
+  }
+  .faq-item[open] summary::after{
+    content: '−';
+    transform: translateY(-50%) rotate(180deg);
+  }
+  .faq-item p{
+    padding: 0 8px 22px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink2, #4B4339);
+    max-width: 64ch;
+  }
 </style>
 </head>
 <body>
@@ -350,7 +448,7 @@
   <div>
     <div class="eyebrow fade d1">
       <span class="pulse"></span>
-      <span>Mac · Бета · Серверы в РФ</span>
+      <span>Mac · Windows · Голос в текст</span>
       <span class="bar"></span>
     </div>
 
@@ -359,7 +457,7 @@
     </h1>
 
     <p class="hero-lede fade d3">
-      ВайбВиспр превращает твой голос в чистый текст в любом приложении на Mac. Удержи клавишу, скажи, отпусти — слова окажутся там, где курсор. <strong>В 3,2 раза быстрее печати.</strong>
+      Удержи клавишу, скажи, отпусти — слова окажутся в том приложении, где курсор. Mail, Slack, Notion, мессенджеры. <strong>В&nbsp;3,67 раза быстрее печати.</strong>
     </p>
 
     <div class="hero-cta-row fade d4">
@@ -374,8 +472,8 @@
 
     <div class="hero-meta fade d5">
       <span>10 минут бесплатно</span>
-      <span>Серверы в РФ</span>
-      <span>Оплата рублями</span>
+      <span>Без VPN</span>
+      <span>Оплата в&nbsp;₽</span>
     </div>
   </div>
 
@@ -384,7 +482,7 @@
       <svg class="brandmark" viewBox="0 0 40 40"><use href="#vw-mark"/></svg>
     </div>
     <div class="hero-tags">
-      <span class="hero-tag t1">Hold&nbsp;·&nbsp;Fn</span>
+      <span class="hero-tag t1">Удерживай&nbsp;клавишу</span>
       <span class="hero-tag t2">Слушаю…</span>
       <span class="hero-tag t3">220&nbsp;сл/мин</span>
     </div>
@@ -410,21 +508,21 @@
   <div class="steps fade d2">
     <div class="step">
       <span class="step-num">01</span>
-      <h3>Удержи <em>клавишу</em></h3>
-      <p>По умолчанию это <strong>Fn</strong>. Можно поменять на любое сочетание — например <strong>⌘+Shift+Space</strong>.</p>
-      <span class="meta">сочетание · <kbd>Fn</kbd></span>
+      <h3>Удержи клавишу</h3>
+      <p>Любое сочетание под твою руку — настраивается в приложении. Один раз выбрал — и всё.</p>
+      <span class="meta">сочетание · <kbd>твоё</kbd></span>
     </div>
     <div class="step">
       <span class="step-num">02</span>
-      <h3>Говори<br/><em>как обычно</em></h3>
-      <p>Целыми фразами, со словами-паразитами и оговорками. ВайбВиспр всё уберёт, расставит знаки препинания и абзацы.</p>
+      <h3>Говори как обычно</h3>
+      <p>Целыми фразами, со словами-паразитами и оговорками. Всё уберётся, знаки препинания и абзацы расставятся.</p>
       <span class="meta">сигнал · <span style="color:var(--coral)">●</span> запись</span>
     </div>
     <div class="step">
       <span class="step-num">03</span>
-      <h3>Отпусти —<br/><em>готово</em></h3>
-      <p>Текст уже в курсоре. В стиле приложения, с правильными именами из контекста. 220 слов в минуту против 60 при печати.</p>
-      <span class="meta">в курсор · ⌘V не нужно</span>
+      <h3>Отпусти — готово</h3>
+      <p>Текст в курсоре. В стиле приложения, с правильными именами из контекста. 220 слов в минуту против 60 при печати.</p>
+      <span class="meta">прямо в&nbsp;курсор</span>
     </div>
   </div>
 </section>
@@ -441,34 +539,152 @@
       Не просто <em>диктовка</em>.
     </h2>
     <p class="section-lede">
-      ВайбВиспр смотрит в каком приложении ты пишешь, видит контекст переписки, помнит твой словарь и понимает голосовые команды редактирования.
+      Смотрит в каком приложении ты пишешь, помнит твой словарь, понимает голосовые команды редактирования.
     </p>
   </div>
 
   <div class="features">
     <article class="feature fade d2">
       <span class="label">Контекст</span>
-      <h4>Видит, <em>где</em> ты пишешь</h4>
-      <p>ВайбВиспр замечает приложение и окно. Имя «Костя» останется именем, а не «костяной». Email-получатели подсказывают спеллинг.</p>
+      <h4>Видит, где ты пишешь</h4>
+      <p>Замечает приложение и окно. Имя «Костя» останется именем, а не «костяной». Email-получатели подсказывают спеллинг.</p>
     </article>
 
     <article class="feature fade d3">
       <span class="label">Smart-словарь</span>
-      <h4>Словарь <em>учится сам</em></h4>
-      <p>Добавь имена и термины вручную — или просто диктуй. ВайбВиспр сам предложит новые слова: «Добавить “Айша” в словарь?»</p>
+      <h4>Словарь учится сам</h4>
+      <p>Добавь имена и термины вручную — или просто диктуй. Сам предложит новые слова: «Добавить “Айша” в словарь?»</p>
     </article>
 
     <article class="feature fade d4">
       <span class="label">Редактирование</span>
-      <h4>Голосом, <em>без рук</em></h4>
-      <p>Выдели текст, удержи клавишу, скажи «сделай формальнее» или «перепиши коротко». ВайбВиспр заменит фрагмент.</p>
+      <h4>Голосом, без рук</h4>
+      <p>Выдели текст, удержи клавишу, скажи «сделай формальнее» или «перепиши коротко». Заменит фрагмент.</p>
     </article>
 
     <article class="feature fade d5">
-      <span class="label">Compliance</span>
-      <h4>Всё <em>в РФ</em></h4>
-      <p>Аудио уходит в Yandex SpeechKit, остаётся в России. 152-ФЗ соблюдён. Оплата рублями через Робокассу, без валютных карт.</p>
+      <span class="label">Удобство</span>
+      <h4>Без заморочек</h4>
+      <p>Российский сервис: оплата рублями, без иностранных карт, без VPN. Чек на email сразу после оплаты.</p>
     </article>
+  </div>
+</section>
+
+<!-- Сравнение с конкурентами -->
+<section class="section compare-section" id="compare">
+  <div class="section-head fade d1">
+    <div class="eyebrow">
+      <span class="num">03</span>
+      <span class="bar"></span>
+      <span>Сравнение</span>
+    </div>
+    <h2 class="section-h2">
+      Те же фичи,<br/><em>в&nbsp;два раза дешевле</em>.
+    </h2>
+    <p class="section-lede">
+      Wispr Flow и Superwhisper — отличные продукты, но они сделаны не для России. ВайбВиспр — то же самое, но с оплатой рублями и поддержкой на русском.
+    </p>
+  </div>
+
+  <div class="compare-table fade d2">
+    <div class="compare-row compare-head">
+      <span></span>
+      <span>Wispr Flow</span>
+      <span>Superwhisper</span>
+      <span class="compare-us">ВайбВиспр</span>
+    </div>
+    <div class="compare-row">
+      <span>Цена за месяц</span>
+      <span>$12 (~1&thinsp;100&nbsp;₽)</span>
+      <span>$8.49 (~800&nbsp;₽)</span>
+      <span class="compare-us">от&nbsp;299&nbsp;₽</span>
+    </div>
+    <div class="compare-row">
+      <span>Оплата картой РФ</span>
+      <span>—</span>
+      <span>—</span>
+      <span class="compare-us">да</span>
+    </div>
+    <div class="compare-row">
+      <span>Чек для&nbsp;бухгалтерии</span>
+      <span>—</span>
+      <span>—</span>
+      <span class="compare-us">да</span>
+    </div>
+    <div class="compare-row">
+      <span>Русский интерфейс</span>
+      <span>—</span>
+      <span>—</span>
+      <span class="compare-us">да</span>
+    </div>
+    <div class="compare-row">
+      <span>Поддержка на&nbsp;русском</span>
+      <span>—</span>
+      <span>—</span>
+      <span class="compare-us">да</span>
+    </div>
+    <div class="compare-row">
+      <span>Mac · Windows</span>
+      <span>Mac</span>
+      <span>Mac</span>
+      <span class="compare-us">Mac · Windows</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="section-head fade d1">
+    <div class="eyebrow">
+      <span class="num">04</span>
+      <span class="bar"></span>
+      <span>Частые вопросы</span>
+    </div>
+    <h2 class="section-h2">
+      Что обычно <em>спрашивают</em>.
+    </h2>
+  </div>
+
+  <div class="faq-list fade d2">
+    <details class="faq-item">
+      <summary>Что значит «минуты диктовки»?</summary>
+      <p>Тарифицируем по длительности самих аудио-записей, а не по количеству. Сказал «отправь отчёт» — 2&nbsp;секунды. Записал 5-минутный план — 5&nbsp;минут. На Lite&nbsp;(200 минут) средний человек делает около 1&nbsp;500 коротких диктовок в&nbsp;месяц.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Можно ли поменять клавишу запуска?</summary>
+      <p>Да, в настройках приложения. Любое сочетание — Fn, правая ⌥, ⌘+Shift+Space, что угодно. Один раз настроил и забыл.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Можно ли отменить подписку?</summary>
+      <p>Да, одним кликом в личном кабинете. Доступ сохраняется до конца оплаченного периода, потом автоматом переключаешься на Free.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Сохраняется ли мой голос на серверах?</summary>
+      <p>Нет. Аудио уходит на распознавание и сразу удаляется — мы не храним записи. Сохраняется только итоговый текст (для статистики и истории, можно отключить в&nbsp;настройках).</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Работает ли offline?</summary>
+      <p>Сейчас нет — распознавание идёт через облако. Готовим локальный режим: распознавание прямо на твоём Mac/Windows без интернета, для тех кому критична приватность.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Когда будет Windows-версия?</summary>
+      <p>В&nbsp;разработке, MVP уже почти готов. Если хочешь попасть в&nbsp;ранний доступ — зарегистрируйся, напиши на vibewispr@yandex.ru, дадим ссылку на бету.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Что если интернет пропадёт во время диктовки?</summary>
+      <p>Запись на твоём устройстве не теряется — приложение покажет ошибку и предложит повторить отправку, как только сеть вернётся.</p>
+    </details>
+
+    <details class="faq-item">
+      <summary>Подходит для команд?</summary>
+      <p>Pro Plus покрывает до 3&nbsp;устройств. Для большего количества — напиши, обсудим командный тариф.</p>
+    </details>
   </div>
 </section>
 
@@ -476,7 +692,7 @@
 <section class="cta-block">
   <div class="cta-card fade d1">
     <h2>Привыкнешь — печатать <em>больше не захочется</em>.</h2>
-    <p>Зарегистрируйся, скачай DMG, войди в приложение тем же email — подписка работает. Установка занимает пять минут.</p>
+    <p>Зарегистрируйся, скачай DMG, войди тем же email — подписка работает в&nbsp;приложении.</p>
     <div class="row">
       <a class="btn-primary" href="register.html">Начать бесплатно</a>
       <a class="btn-secondary" href="pricing.html">Посмотреть тарифы</a>
