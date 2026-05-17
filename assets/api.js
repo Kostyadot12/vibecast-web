@@ -213,6 +213,28 @@ async function startCheckout(planId) {
   return resp.json();
 }
 
+async function forgotPassword(email) {
+  const resp = await fetch(`${API_BASE}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.message || data.error || 'Не удалось отправить письмо');
+  return data;
+}
+
+async function resetPassword(token, newPassword) {
+  const resp = await fetch(`${API_BASE}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token, newPassword }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.message || data.error || 'Не удалось сбросить пароль');
+  return data;
+}
+
 async function changePassword(oldPassword, newPassword) {
   const resp = await apiFetch('/auth/change-password', {
     method: 'POST',
@@ -295,4 +317,6 @@ window.VF = {
   cancelSubscription,
   changePassword,
   deleteAccount,
+  forgotPassword,
+  resetPassword,
 };
