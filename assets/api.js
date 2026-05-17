@@ -234,9 +234,34 @@ function friendlyValidationMessage(issues) {
 }
 
 // Экспорт для inline-скриптов на страницах.
+/**
+ * Универсальная JSON-обёртка над apiFetch — для админ-страниц.
+ * @param {string} path — путь без /api префикса, например "/admin/users".
+ * @param {{method?: string, body?: any}=} opts — body будет JSON.stringify-нут.
+ * @returns {Promise<any>} распарсенный JSON ответа.
+ * @throws Error если status >= 400.
+ */
+async function apiJSON(path, opts = {}) {
+  const init = { method: opts.method || 'GET' };
+  if (opts.body !== undefined) {
+    init.body = JSON.stringify(opts.body);
+  }
+  const resp = await apiFetch(path, init);
+  const text = await resp.text();
+  let data;
+  try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (!resp.ok) {
+    const msg = (data && (data.message || data.error)) || `HTTP ${resp.status}`;
+    throw new Error(msg);
+  }
+  return data;
+}
+
 window.VF = {
   auth,
   showToast,
+  apiFetch,
+  apiJSON,
   register,
   verifyEmail,
   resendVerificationCode,

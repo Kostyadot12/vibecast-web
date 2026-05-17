@@ -82,6 +82,18 @@
       </div>
     </div>
 
+    <!-- Админ-карточка (видна только для админов) -->
+    <div class="card fade d2" id="admin-card" style="display:none; background: linear-gradient(180deg, #FAF3E6 0%, #F4EAD2 100%); border-color: rgba(178, 88, 64, 0.30);">
+      <div class="card-eyebrow" style="color: #8E3F2C;">Администратор</div>
+      <h2 style="margin: 4px 0 8px;">Кабинет владельца</h2>
+      <p class="desc">Метрики, юзеры, платежи, состояние сервиса.</p>
+      <div class="action-row">
+        <a class="btn-primary" href="admin.html">
+          Открыть админ-кабинет →
+        </a>
+      </div>
+    </div>
+
     <!-- Правая карточка — скачать DMG -->
     <div class="card fade d3">
       <div class="card-eyebrow">Установка</div>
@@ -184,6 +196,11 @@
       document.getElementById('upgrade-btn').style.display = '';
       if (plan !== 'FREE' && status === 'ACTIVE' && !data.subscription?.cancelAtPeriodEnd) {
         document.getElementById('cancel-btn').style.display = '';
+      }
+
+      // Если backend сказал что юзер — админ, показываем переход в админку.
+      if (data.user?.isAdmin) {
+        document.getElementById('admin-card').style.display = '';
       }
     } catch (err) {
       VF.showToast('Не удалось загрузить кабинет — войди ещё раз', 'danger');
