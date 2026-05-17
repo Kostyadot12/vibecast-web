@@ -118,7 +118,7 @@
 
   const params = new URLSearchParams(location.search);
   if (params.get('welcome') === '1') {
-    VF.showToast('Аккаунт создан. 30 минут диктовки в месяц — твои.', 'info', 5000);
+    VF.showToast('Аккаунт создан. 10 минут диктовки в месяц — твои.', 'info', 5000);
   }
   if (params.get('paid') === '1') {
     VF.showToast('Платёж прошёл. Подписка активирована.', 'info', 5500);
@@ -128,7 +128,7 @@
   }
 
   const planLabels = {
-    FREE:     { name: 'Free', desc: '30 минут диктовки в месяц. Хватит чтобы оценить.' },
+    FREE:     { name: 'Free', desc: '10 минут диктовки в месяц. Хватит чтобы оценить.' },
     PRO_LITE: { name: 'Lite', desc: '200 минут в месяц. На повседневную переписку.' },
     PRO:      { name: 'Pro',  desc: '700 минут в месяц. Для активной работы.' },
     PRO_PLUS: { name: 'Pro Plus', desc: '1 500 минут в месяц. YandexGPT Pro для лучшего русского.' },
@@ -161,7 +161,7 @@
       // Тарификация в МИНУТАХ аудио. Бэкенд возвращает audioMinutesUsed: Double.
       const usedMinutesRaw = data.usage?.audioMinutesUsed ?? 0;
       const limitMinutes = ({
-        FREE: 30, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500,
+        FREE: 10, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500,
       })[plan];
       const usedStr = usedMinutesRaw < 10
         ? usedMinutesRaw.toFixed(1)
