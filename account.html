@@ -10,6 +10,54 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/styles.css" />
 <style>
+  /* Inline-edit имени */
+  .name-edit-btn{
+    background: none;
+    border: 1px solid var(--hair, rgba(42,37,32,0.10));
+    border-radius: 8px;
+    color: var(--muted, #88806F);
+    cursor: pointer;
+    padding: 6px 8px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .name-edit-btn:hover{ color: var(--terra-deep, #8E3F2C); border-color: rgba(178,88,64,0.40); }
+  .name-edit-input{
+    font-family: 'Fraunces', serif;
+    font-size: inherit;
+    font-style: italic;
+    font-weight: 500;
+    padding: 4px 10px;
+    border: 1px solid var(--terra, #B25840);
+    border-radius: 6px;
+    background: white;
+    color: var(--ink, #2A2520);
+    min-width: 180px;
+  }
+  .name-edit-input:focus{ outline: none; }
+  .name-edit-save{
+    background: var(--terra-deep, #8E3F2C);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .name-edit-cancel{
+    background: none;
+    border: 1px solid var(--hair, rgba(42,37,32,0.10));
+    color: var(--muted, #88806F);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
   /* Доп. стили специфичные для кабинета */
   .upgrade-nudge{
     margin-top: 14px;
@@ -233,7 +281,19 @@
 <main class="cabinet">
   <div class="cabinet-head fade d1">
     <span class="sub" id="email-line">…</span>
-    <h1 id="greeting">Привет<em>!</em></h1>
+    <h1 id="greeting" style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;">
+      <span>Привет, <em id="user-name-display">…</em></span>
+      <button id="edit-name-btn" class="name-edit-btn" title="Изменить имя" aria-label="Изменить имя">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M11 2l3 3-9 9H2v-3z"/>
+        </svg>
+      </button>
+      <form id="edit-name-form" style="display:none; gap:6px; align-items:center;">
+        <input type="text" id="edit-name-input" maxlength="60" placeholder="Имя" class="name-edit-input" />
+        <button type="submit" class="name-edit-save" title="Сохранить (Enter)">Сохранить</button>
+        <button type="button" id="edit-name-cancel" class="name-edit-cancel" title="Отмена (Esc)">Отмена</button>
+      </form>
+    </h1>
   </div>
 
   <div class="cabinet-grid">
@@ -395,7 +455,7 @@
   </div>
 </div>
 
-<script src="assets/api.js?v=4"></script>
+<script src="assets/api.js?v=5"></script>
 <script>
   if (!VF.auth.isAuthenticated()) {
     window.location.replace('login.html');
@@ -420,6 +480,8 @@
   };
   const planLimitMinutes = { FREE: 10, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500 };
   const planPriceRub = { FREE: 0, PRO_LITE: 299, PRO: 799, PRO_PLUS: 1490 };
+
+  let currentName = '';  // последнее сохранённое user.name (или '' если не задано)
 
   function nameFromEmail(email) {
     const local = (email || '').split('@')[0];
@@ -447,10 +509,10 @@
     try {
       const data = await VF.me();
       const email = data.user.email;
-      const displayName = (data.user.name && data.user.name.trim()) || nameFromEmail(email);
+      currentName = (data.user.name && data.user.name.trim()) || '';
+      const displayName = currentName || nameFromEmail(email);
       document.getElementById('email-line').textContent = email;
-      document.getElementById('greeting').innerHTML =
-        'Привет, <em>' + displayName + '</em>';
+      document.getElementById('user-name-display').textContent = displayName;
 
       const plan = data.subscription?.plan || 'FREE';
       const status = data.subscription?.status || 'FREE';
@@ -532,6 +594,48 @@
       setTimeout(() => window.location.replace('login.html'), 1200);
     }
   }
+
+  // ─── Inline edit имени ─────────────────────────────────────────────
+  const nameDisplayEl = document.getElementById('user-name-display');
+  const editNameBtn = document.getElementById('edit-name-btn');
+  const editNameForm = document.getElementById('edit-name-form');
+  const editNameInput = document.getElementById('edit-name-input');
+  const editNameCancel = document.getElementById('edit-name-cancel');
+
+  function startEditName() {
+    editNameInput.value = currentName;
+    nameDisplayEl.style.display = 'none';
+    editNameBtn.style.display = 'none';
+    editNameForm.style.display = 'inline-flex';
+    setTimeout(() => editNameInput.focus(), 50);
+  }
+  function cancelEditName() {
+    editNameForm.style.display = 'none';
+    nameDisplayEl.style.display = '';
+    editNameBtn.style.display = '';
+  }
+
+  editNameBtn.addEventListener('click', startEditName);
+  editNameCancel.addEventListener('click', cancelEditName);
+  editNameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); cancelEditName(); }
+  });
+
+  editNameForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const newName = editNameInput.value.trim();
+    try {
+      const res = await VF.updateProfile(newName);
+      currentName = res.user?.name || '';
+      // Если юзер очистил имя — показываем fallback от email
+      const email = document.getElementById('email-line').textContent;
+      nameDisplayEl.textContent = currentName || nameFromEmail(email);
+      cancelEditName();
+      VF.showToast('Имя обновлено', 'info', 2500);
+    } catch (err) {
+      VF.showToast(err.message, 'danger');
+    }
+  });
 
   // ─── Logout ────────────────────────────────────────────────────────
   document.getElementById('logout-btn').addEventListener('click', async () => {

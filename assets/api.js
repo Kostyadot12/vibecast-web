@@ -215,6 +215,16 @@ async function startCheckout(planId) {
   return resp.json();
 }
 
+async function updateProfile(name) {
+  const resp = await apiFetch('/auth/profile', {
+    method: 'POST',
+    body: JSON.stringify({ name }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.message || data.error || 'Не удалось сохранить');
+  return data;
+}
+
 async function forgotPassword(email) {
   const resp = await fetch(`${API_BASE}/auth/forgot-password`, {
     method: 'POST',
@@ -321,4 +331,5 @@ window.VF = {
   deleteAccount,
   forgotPassword,
   resetPassword,
+  updateProfile,
 };
