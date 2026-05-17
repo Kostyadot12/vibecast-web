@@ -9,6 +9,190 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Public+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/styles.css" />
+<style>
+  /* Доп. стили специфичные для кабинета */
+  .upgrade-nudge{
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: linear-gradient(180deg, rgba(178,88,64,0.10) 0%, rgba(178,88,64,0.04) 100%);
+    border: 1px solid rgba(178,88,64,0.25);
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--ink2, #4B4339);
+  }
+  .upgrade-nudge a{
+    color: var(--terra-deep, #8E3F2C);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(142,63,44,0.4);
+  }
+
+  .meta-line{
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--hair, rgba(42,37,32,0.10));
+    font-size: 13px;
+    color: var(--muted, #88806F);
+    display: grid;
+    gap: 4px;
+  }
+  .meta-line strong{ color: var(--ink2, #4B4339); font-weight: 500; }
+
+  .welcome-card{
+    grid-column: 1 / -1;
+    padding: 22px 26px;
+    background: linear-gradient(180deg, var(--surface, #FAF5E9) 0%, #F4EAD2 100%);
+    border-radius: 14px;
+    border: 1px solid var(--hair, rgba(42,37,32,0.10));
+    margin-bottom: 4px;
+  }
+  .welcome-card h3{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
+  .welcome-steps{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .welcome-step{
+    padding: 14px;
+    background: white;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .welcome-step .num{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--terra-deep, #8E3F2C);
+    letter-spacing: 0.18em;
+  }
+  @media (max-width: 720px){
+    .welcome-steps{ grid-template-columns: 1fr; }
+  }
+
+  .install-row{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .install-row .btn-secondary{
+    padding: 12px 14px;
+    font-size: 13.5px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .install-row .btn-disabled{
+    background: var(--paper-2, #EEE5D2);
+    color: var(--muted, #88806F);
+    cursor: not-allowed;
+    pointer-events: none;
+    border: 1px dashed var(--hair, rgba(42,37,32,0.15));
+    border-radius: 999px;
+    padding: 12px 14px;
+    font-size: 13.5px;
+    text-align: center;
+    line-height: 1.3;
+    font-weight: 500;
+  }
+  @media (max-width: 560px){
+    .install-row{ grid-template-columns: 1fr; }
+  }
+
+  .danger-zone{
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--hair, rgba(42,37,32,0.10));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted, #88806F);
+  }
+  .danger-zone a, .danger-zone button{
+    background: none;
+    border: none;
+    color: var(--muted, #88806F);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-family: inherit;
+  }
+  .danger-zone a:hover, .danger-zone button:hover{
+    color: var(--red, #A8412C);
+  }
+  .danger-zone .support{
+    color: var(--ink2, #4B4339);
+    text-decoration: none;
+  }
+  .danger-zone .support strong{ color: var(--ink, #2A2520); }
+
+  /* Модалки (смена пароля / удаление) */
+  .modal-backdrop{
+    position: fixed; inset: 0;
+    background: rgba(42,37,32,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+  .modal-backdrop.open{ display: flex; }
+  .modal{
+    background: var(--paper, #F5EFE3);
+    border-radius: 16px;
+    max-width: 460px;
+    width: 100%;
+    padding: 28px;
+  }
+  .modal h2{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 8px;
+  }
+  .modal .sub{ color: var(--muted, #88806F); font-size: 13px; margin: 0 0 18px; }
+  .modal .input-row{ margin-bottom: 12px; }
+  .modal label{
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted, #88806F);
+    margin-bottom: 6px;
+  }
+  .modal input{
+    width: 100%;
+    padding: 11px 13px;
+    font-family: inherit;
+    font-size: 14px;
+    border: 1px solid var(--hair, rgba(42,37,32,0.10));
+    border-radius: 9px;
+    background: white;
+    color: var(--ink, #2A2520);
+    box-sizing: border-box;
+  }
+  .modal input:focus{ outline: none; border-color: var(--terra, #B25840); }
+  .modal-actions{
+    display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px;
+  }
+  .modal .err-line{
+    color: var(--red, #A8412C);
+    font-size: 13px;
+    padding: 8px 0;
+    display: none;
+  }
+  .modal .err-line.show{ display: block; }
+</style>
 </head>
 <body>
 
@@ -39,8 +223,9 @@
   <div class="nav-links">
     <a href="index.html">Главная</a>
     <a href="pricing.html">Тарифы</a>
-      </div>
+  </div>
   <div class="nav-right">
+    <a id="nav-admin" href="admin.html" class="btn-secondary" style="display:none; padding: 8px 16px; font-size: 13px;">Админ</a>
     <button id="logout-btn" class="btn-secondary" style="padding: 8px 16px; font-size: 13px;">Выйти</button>
   </div>
 </nav>
@@ -48,17 +233,40 @@
 <main class="cabinet">
   <div class="cabinet-head fade d1">
     <span class="sub" id="email-line">…</span>
-    <h1>Личный <em>кабинет</em></h1>
+    <h1 id="greeting">Привет<em>!</em></h1>
   </div>
 
   <div class="cabinet-grid">
+
+    <!-- Welcome для новых юзеров на FREE без диктовок -->
+    <div class="welcome-card fade d2" id="welcome-card" style="display:none;">
+      <div class="card-eyebrow" style="color: var(--terra-deep);">С чего начать</div>
+      <h3>Три шага — и&nbsp;ты&nbsp;диктуешь</h3>
+      <div class="welcome-steps">
+        <div class="welcome-step">
+          <div class="num">01</div>
+          <strong>Скачай&nbsp;приложение</strong><br/>
+          <span style="color: var(--muted);">Mac — ниже. Windows — скоро.</span>
+        </div>
+        <div class="welcome-step">
+          <div class="num">02</div>
+          <strong>Войди тем же email</strong><br/>
+          <span style="color: var(--muted);">Подписка подтянется автоматически.</span>
+        </div>
+        <div class="welcome-step">
+          <div class="num">03</div>
+          <strong>Удерживай клавишу&nbsp;— говори</strong><br/>
+          <span style="color: var(--muted);">По умолчанию правая&nbsp;⌥, меняется в настройках.</span>
+        </div>
+      </div>
+    </div>
 
     <!-- Левая карточка — тариф и использование -->
     <div class="card fade d2">
       <div class="card-eyebrow">Тариф</div>
       <div style="display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:6px;">
         <h2 id="plan-name" style="margin:0;">…</h2>
-        <span id="plan-status" class="plan-status free">…</span>
+        <span id="plan-status" class="plan-status free" style="display:none;">…</span>
       </div>
       <p class="desc" id="plan-desc">…</p>
 
@@ -68,8 +276,19 @@
         </div>
         <div class="usage-line">
           <span id="usage-text">…</span>
-          <span id="usage-month">…</span>
+          <span id="usage-reset" style="color: var(--muted);">…</span>
         </div>
+      </div>
+
+      <!-- Push на апгрейд (виден при >70% использования на FREE/LITE) -->
+      <div class="upgrade-nudge" id="upgrade-nudge" style="display:none;">
+        <span id="upgrade-nudge-text"></span>
+      </div>
+
+      <!-- Дата следующего списания (для платных) -->
+      <div class="meta-line" id="next-charge" style="display:none;">
+        <div>Следующее списание: <strong id="next-charge-date">—</strong></div>
+        <div id="next-charge-amount" style="font-size:12px;"></div>
       </div>
 
       <div class="action-row">
@@ -94,20 +313,32 @@
       </div>
     </div>
 
-    <!-- Правая карточка — скачать DMG -->
+    <!-- Правая карточка — скачать (Mac + Windows скоро) -->
     <div class="card fade d3">
       <div class="card-eyebrow">Установка</div>
       <h2>Скачать <em>ВайбВиспр</em></h2>
-      <p class="desc">
-        После установки войди в приложении тем же email и паролем — подписка подтянется автоматически.
-      </p>
-      <div class="action-row">
-        <a class="btn-primary" href="https://github.com/Kostyadot12/vibewispr/releases/latest/download/VibeWispr.dmg">
-          Скачать .dmg
+      <p class="desc">После установки войди в приложении тем же email — подписка подтянется автоматически.</p>
+      <div class="install-row">
+        <a class="btn-secondary" href="https://github.com/Kostyadot12/vibewispr/releases/latest/download/VibeWispr.dmg">
+          Mac (.dmg)
         </a>
+        <span class="btn-disabled" title="В разработке">
+          Windows · скоро
+        </span>
       </div>
     </div>
 
+  </div>
+
+  <!-- Зона ниже основных карточек: поддержка, смена пароля, удаление -->
+  <div class="danger-zone fade d4">
+    <div class="support">
+      Нужна помощь? Пиши <strong><a href="mailto:vibewispr@yandex.ru" style="color: inherit;">vibewispr@yandex.ru</a></strong>
+    </div>
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      <button id="change-password-btn">Сменить пароль</button>
+      <button id="delete-account-btn">Удалить аккаунт</button>
+    </div>
   </div>
 </main>
 
@@ -119,10 +350,52 @@
     <a href="terms.html">Оферта</a>
     <a href="refund.html">Возврат</a>
     <a href="privacy.html">Конфиденциальность</a>
-      </div>
+  </div>
 </footer>
 
-<script src="assets/api.js?v=3"></script>
+<!-- Модалка: смена пароля -->
+<div class="modal-backdrop" id="pwd-modal">
+  <div class="modal">
+    <h2>Сменить пароль</h2>
+    <p class="sub">После смены тебя выкинет на других устройствах. На текущем — останешься залогиненным.</p>
+    <form id="pwd-form">
+      <div class="input-row">
+        <label>Текущий пароль</label>
+        <input type="password" id="pwd-old" autocomplete="current-password" required />
+      </div>
+      <div class="input-row">
+        <label>Новый пароль</label>
+        <input type="password" id="pwd-new" autocomplete="new-password" minlength="8" required />
+      </div>
+      <div class="err-line" id="pwd-err"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="pwd-cancel" style="padding: 9px 16px; font-size: 13px;">Отмена</button>
+        <button type="submit" class="btn-primary" style="padding: 9px 18px; font-size: 13.5px;">Сменить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Модалка: удаление аккаунта -->
+<div class="modal-backdrop" id="del-modal">
+  <div class="modal">
+    <h2>Удалить аккаунт?</h2>
+    <p class="sub">Это удалит все твои диктовки, платежи и подписку. <strong>Действие необратимо.</strong> Для подтверждения введи слово <code style="font-family:'JetBrains Mono',monospace; background: rgba(0,0,0,0.06); padding: 1px 6px; border-radius: 4px;">УДАЛИТЬ</code> в поле ниже.</p>
+    <form id="del-form">
+      <div class="input-row">
+        <label>Подтверждение</label>
+        <input type="text" id="del-confirm" placeholder="УДАЛИТЬ" autocomplete="off" required />
+      </div>
+      <div class="err-line" id="del-err"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="del-cancel" style="padding: 9px 16px; font-size: 13px;">Отмена</button>
+        <button type="submit" class="btn-primary" style="padding: 9px 18px; font-size: 13.5px; background: linear-gradient(180deg, #A8412C, #8E3F2C);">Удалить навсегда</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="assets/api.js?v=4"></script>
 <script>
   if (!VF.auth.isAuthenticated()) {
     window.location.replace('login.html');
@@ -141,15 +414,42 @@
 
   const planLabels = {
     FREE:     { name: 'Free', desc: '10 минут диктовки в месяц. Хватит чтобы оценить.' },
-    PRO_LITE: { name: 'Lite', desc: '200 минут в месяц. На повседневную переписку.' },
+    PRO_LITE: { name: 'Lite', desc: '200 минут в месяц. Для повседневной переписки.' },
     PRO:      { name: 'Pro',  desc: '700 минут в месяц. Для активной работы.' },
-    PRO_PLUS: { name: 'Pro Plus', desc: '1 500 минут в месяц. YandexGPT Pro для лучшего русского.' },
+    PRO_PLUS: { name: 'Pro Plus', desc: '1 500 минут в месяц. Премиум-обработка YandexGPT Pro.' },
   };
+  const planLimitMinutes = { FREE: 10, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500 };
+  const planPriceRub = { FREE: 0, PRO_LITE: 299, PRO: 799, PRO_PLUS: 1490 };
+
+  function nameFromEmail(email) {
+    const local = (email || '').split('@')[0];
+    // Берём первое «слово» до точки/дефиса/подчёркивания, делаем заглавную
+    const first = local.split(/[._-]/)[0] || local;
+    return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase();
+  }
+
+  function daysUntilFirstOfNextMonth() {
+    const now = new Date();
+    const firstNext = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return Math.max(0, Math.ceil((firstNext - now) / (1000 * 60 * 60 * 24)));
+  }
+  function firstOfNextMonthLabel() {
+    const now = new Date();
+    const firstNext = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return firstNext.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+  }
+  function dateLabel(s) {
+    if (!s) return '—';
+    return new Date(s).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
 
   async function load() {
     try {
       const data = await VF.me();
-      document.getElementById('email-line').textContent = data.user.email;
+      const email = data.user.email;
+      document.getElementById('email-line').textContent = email;
+      document.getElementById('greeting').innerHTML =
+        'Привет, <em>' + nameFromEmail(email) + '</em>';
 
       const plan = data.subscription?.plan || 'FREE';
       const status = data.subscription?.status || 'FREE';
@@ -158,49 +458,73 @@
       document.getElementById('plan-name').textContent = meta.name;
       document.getElementById('plan-desc').textContent = meta.desc;
 
+      // Бэйдж статуса — показываем только если что-то нештатное
       const statusEl = document.getElementById('plan-status');
-      if (status === 'ACTIVE') {
-        statusEl.textContent = 'активна';
-        statusEl.className = 'plan-status active';
-      } else if (status === 'CANCELED') {
-        statusEl.textContent = 'отменена';
+      if (status === 'ACTIVE' && data.subscription?.cancelAtPeriodEnd) {
+        statusEl.textContent = 'отменяется';
         statusEl.className = 'plan-status cancel';
+        statusEl.style.display = '';
+      } else if (status === 'CANCELED' || status === 'EXPIRED' || status === 'PAST_DUE') {
+        statusEl.textContent = status === 'PAST_DUE' ? 'не оплачено' : 'истекла';
+        statusEl.className = 'plan-status cancel';
+        statusEl.style.display = '';
       } else {
-        statusEl.textContent = 'бесплатный план';
-        statusEl.className = 'plan-status free';
+        // ACTIVE без cancel или FREE — ничего не показываем, тариф говорит за себя
+        statusEl.style.display = 'none';
       }
 
-      // Тарификация в МИНУТАХ аудио. Бэкенд возвращает audioMinutesUsed: Double.
+      // Расход в минутах
       const usedMinutesRaw = data.usage?.audioMinutesUsed ?? 0;
-      const limitMinutes = ({
-        FREE: 10, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500,
-      })[plan];
-      const usedStr = usedMinutesRaw < 10
-        ? usedMinutesRaw.toFixed(1)
-        : String(Math.round(usedMinutesRaw));
+      const limitMinutes = planLimitMinutes[plan];
+      const usedStr = usedMinutesRaw < 10 ? usedMinutesRaw.toFixed(1) : String(Math.round(usedMinutesRaw));
+      const pct = limitMinutes > 0 ? Math.min(100, Math.round((usedMinutesRaw / limitMinutes) * 100)) : 0;
 
-      if (limitMinutes < 0) {
-        document.getElementById('usage-text').textContent = `${usedStr} минут · безлимит`;
-        document.getElementById('usage-bar').style.width = '15%';
-        document.getElementById('usage-bar').style.opacity = '0.45';
-      } else {
-        const pct = Math.min(100, Math.round((usedMinutesRaw / limitMinutes) * 100));
-        document.getElementById('usage-text').textContent = `${usedStr} / ${limitMinutes} минут`;
-        document.getElementById('usage-bar').style.width = `${pct}%`;
+      document.getElementById('usage-text').textContent = `${usedStr} / ${limitMinutes} минут`;
+      document.getElementById('usage-bar').style.width = `${pct}%`;
+
+      // Когда лимит обновится
+      const days = daysUntilFirstOfNextMonth();
+      document.getElementById('usage-reset').textContent =
+        days === 0 ? 'обновится сегодня' :
+        days === 1 ? 'обновится завтра' :
+        `обновится через ${days} ${days < 5 ? 'дня' : 'дней'} · ${firstOfNextMonthLabel()}`;
+
+      // Дата следующего списания (для платников)
+      if (plan !== 'FREE' && data.subscription?.currentPeriodEnd) {
+        document.getElementById('next-charge').style.display = '';
+        document.getElementById('next-charge-date').textContent = dateLabel(data.subscription.currentPeriodEnd);
+        document.getElementById('next-charge-amount').textContent =
+          data.subscription.cancelAtPeriodEnd
+            ? 'Подписка отменится после этой даты'
+            : `Спишется ${planPriceRub[plan].toLocaleString('ru-RU')} ₽`;
       }
 
-      const monthDate = new Date(data.usage?.monthStart || Date.now());
-      document.getElementById('usage-month').textContent =
-        monthDate.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+      // Upgrade-push при >70% использования (Free/Lite/Pro)
+      const nudge = document.getElementById('upgrade-nudge');
+      const nudgeText = document.getElementById('upgrade-nudge-text');
+      if (limitMinutes > 0 && pct >= 70 && plan !== 'PRO_PLUS') {
+        const nextPlan = plan === 'FREE' ? 'PRO_LITE' : plan === 'PRO_LITE' ? 'PRO' : 'PRO_PLUS';
+        nudge.style.display = '';
+        nudgeText.innerHTML =
+          `Использовано ${pct}% — близко к лимиту. ` +
+          `<a href="pricing.html">${planLabels[nextPlan].name} даёт ${planLimitMinutes[nextPlan]} минут</a>.`;
+      }
+
+      // Welcome-блок: показываем если юзер на Free и нет ни одной диктовки
+      const dictCount = data.usage?.dictationsThisMonth ?? 0;
+      if (plan === 'FREE' && dictCount === 0) {
+        document.getElementById('welcome-card').style.display = '';
+      }
 
       document.getElementById('upgrade-btn').style.display = '';
       if (plan !== 'FREE' && status === 'ACTIVE' && !data.subscription?.cancelAtPeriodEnd) {
         document.getElementById('cancel-btn').style.display = '';
       }
 
-      // Если backend сказал что юзер — админ, показываем переход в админку.
+      // Админ — показываем И отдельную кнопку в навбаре, И карточку.
       if (data.user?.isAdmin) {
         document.getElementById('admin-card').style.display = '';
+        document.getElementById('nav-admin').style.display = '';
       }
     } catch (err) {
       VF.showToast('Не удалось загрузить кабинет — войди ещё раз', 'danger');
@@ -208,11 +532,13 @@
     }
   }
 
+  // ─── Logout ────────────────────────────────────────────────────────
   document.getElementById('logout-btn').addEventListener('click', async () => {
     await VF.logout();
     window.location.replace('index.html');
   });
 
+  // ─── Отмена подписки ───────────────────────────────────────────────
   document.getElementById('cancel-btn').addEventListener('click', async () => {
     if (!confirm('Отменить подписку? Доступ сохранится до конца оплаченного периода.')) return;
     try {
@@ -221,6 +547,63 @@
       setTimeout(load, 800);
     } catch (err) {
       VF.showToast(err.message, 'danger');
+    }
+  });
+
+  // ─── Смена пароля ──────────────────────────────────────────────────
+  const pwdModal = document.getElementById('pwd-modal');
+  document.getElementById('change-password-btn').addEventListener('click', () => {
+    document.getElementById('pwd-err').classList.remove('show');
+    document.getElementById('pwd-old').value = '';
+    document.getElementById('pwd-new').value = '';
+    pwdModal.classList.add('open');
+    setTimeout(() => document.getElementById('pwd-old').focus(), 50);
+  });
+  document.getElementById('pwd-cancel').addEventListener('click', () => pwdModal.classList.remove('open'));
+  pwdModal.addEventListener('click', (e) => { if (e.target === pwdModal) pwdModal.classList.remove('open'); });
+  document.getElementById('pwd-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const oldP = document.getElementById('pwd-old').value;
+    const newP = document.getElementById('pwd-new').value;
+    const err = document.getElementById('pwd-err');
+    err.classList.remove('show');
+    try {
+      const res = await VF.changePassword(oldP, newP);
+      pwdModal.classList.remove('open');
+      VF.showToast(res.message || 'Пароль обновлён', 'info', 4500);
+    } catch (e2) {
+      err.textContent = e2.message;
+      err.classList.add('show');
+    }
+  });
+
+  // ─── Удаление аккаунта ─────────────────────────────────────────────
+  const delModal = document.getElementById('del-modal');
+  document.getElementById('delete-account-btn').addEventListener('click', () => {
+    document.getElementById('del-err').classList.remove('show');
+    document.getElementById('del-confirm').value = '';
+    delModal.classList.add('open');
+    setTimeout(() => document.getElementById('del-confirm').focus(), 50);
+  });
+  document.getElementById('del-cancel').addEventListener('click', () => delModal.classList.remove('open'));
+  delModal.addEventListener('click', (e) => { if (e.target === delModal) delModal.classList.remove('open'); });
+  document.getElementById('del-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const confirmText = document.getElementById('del-confirm').value.trim();
+    const err = document.getElementById('del-err');
+    err.classList.remove('show');
+    if (confirmText !== 'УДАЛИТЬ') {
+      err.textContent = 'Введи именно слово УДАЛИТЬ (заглавными)';
+      err.classList.add('show');
+      return;
+    }
+    try {
+      await VF.deleteAccount();
+      VF.showToast('Аккаунт удалён. До свидания.', 'info', 4000);
+      setTimeout(() => window.location.replace('index.html'), 1500);
+    } catch (e2) {
+      err.textContent = e2.message;
+      err.classList.add('show');
     }
   });
 

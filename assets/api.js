@@ -213,6 +213,28 @@ async function startCheckout(planId) {
   return resp.json();
 }
 
+async function changePassword(oldPassword, newPassword) {
+  const resp = await apiFetch('/auth/change-password', {
+    method: 'POST',
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.message || data.error || 'Не удалось сменить пароль');
+  return data;
+}
+
+async function deleteAccount() {
+  const resp = await apiFetch('/auth/delete-account', {
+    method: 'POST',
+    body: JSON.stringify({ confirm: 'УДАЛИТЬ' }),
+  });
+  const data = await resp.json();
+  if (!resp.ok) throw new Error(data.message || data.error || 'Не удалось удалить аккаунт');
+  // Локальные токены тоже чистим
+  auth.clear();
+  return data;
+}
+
 async function cancelSubscription() {
   const resp = await apiFetch('/billing/cancel', { method: 'POST' });
   if (!resp.ok) {
@@ -271,4 +293,6 @@ window.VF = {
   plans,
   startCheckout,
   cancelSubscription,
+  changePassword,
+  deleteAccount,
 };
