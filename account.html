@@ -118,7 +118,7 @@
 
   const params = new URLSearchParams(location.search);
   if (params.get('welcome') === '1') {
-    VF.showToast('Аккаунт создан. 50 диктовок в месяц — твои.', 'info', 5000);
+    VF.showToast('Аккаунт создан. 30 минут диктовки в месяц — твои.', 'info', 5000);
   }
   if (params.get('paid') === '1') {
     VF.showToast('Платёж прошёл. Подписка активирована.', 'info', 5500);
@@ -128,10 +128,10 @@
   }
 
   const planLabels = {
-    FREE:     { name: 'Free',     desc: '50 диктовок в месяц. Хватит чтобы оценить.' },
-    PRO_LITE: { name: 'Pro Lite', desc: '1 000 диктовок в месяц. На повседневную переписку.' },
-    PRO:      { name: 'Pro',      desc: '3 000 диктовок в месяц. Для активной работы.' },
-    PRO_PLUS: { name: 'Pro Plus', desc: 'Безлимит и YandexGPT Pro для лучшего русского.' },
+    FREE:     { name: 'Free', desc: '30 минут диктовки в месяц. Хватит чтобы оценить.' },
+    PRO_LITE: { name: 'Lite', desc: '200 минут в месяц. На повседневную переписку.' },
+    PRO:      { name: 'Pro',  desc: '700 минут в месяц. Для активной работы.' },
+    PRO_PLUS: { name: 'Pro Plus', desc: '1 500 минут в месяц. YandexGPT Pro для лучшего русского.' },
   };
 
   async function load() {
@@ -158,18 +158,22 @@
         statusEl.className = 'plan-status free';
       }
 
-      const used = data.usage?.dictationsThisMonth ?? 0;
-      const limit = ({
-        FREE: 50, PRO_LITE: 1000, PRO: 3000, PRO_PLUS: -1,
+      // Тарификация в МИНУТАХ аудио. Бэкенд возвращает audioMinutesUsed: Double.
+      const usedMinutesRaw = data.usage?.audioMinutesUsed ?? 0;
+      const limitMinutes = ({
+        FREE: 30, PRO_LITE: 200, PRO: 700, PRO_PLUS: 1500,
       })[plan];
+      const usedStr = usedMinutesRaw < 10
+        ? usedMinutesRaw.toFixed(1)
+        : String(Math.round(usedMinutesRaw));
 
-      if (limit === -1) {
-        document.getElementById('usage-text').textContent = `${used} диктовок · безлимит`;
+      if (limitMinutes < 0) {
+        document.getElementById('usage-text').textContent = `${usedStr} минут · безлимит`;
         document.getElementById('usage-bar').style.width = '15%';
         document.getElementById('usage-bar').style.opacity = '0.45';
       } else {
-        const pct = Math.min(100, Math.round((used / limit) * 100));
-        document.getElementById('usage-text').textContent = `${used} / ${limit} диктовок`;
+        const pct = Math.min(100, Math.round((usedMinutesRaw / limitMinutes) * 100));
+        document.getElementById('usage-text').textContent = `${usedStr} / ${limitMinutes} минут`;
         document.getElementById('usage-bar').style.width = `${pct}%`;
       }
 

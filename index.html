@@ -6,6 +6,13 @@
 <title>ВайбВиспр — Говори вместо того, чтобы печатать</title>
 <meta name="description" content="ВайбВиспр — приложение для Mac, которое превращает голос в чистый текст в любом приложении. Распознавание Yandex SpeechKit, серверы в РФ, оплата в рублях." />
 <link rel="icon" type="image/png" href="assets/vibewispr-logo.png?v=2" />
+<script>
+  // Mac-клиент кидает юзера на vibewispr.ru/#pricing когда он жмёт «Сменить тариф».
+  // На главной нет секции с id="pricing" — отправляем на отдельную страницу.
+  if (location.hash === '#pricing') {
+    location.replace('pricing.html');
+  }
+</script>
 
 <meta property="og:title" content="ВайбВиспр — Говори вместо того, чтобы печатать" />
 <meta property="og:description" content="Голосовая диктовка для Mac: удержи клавишу, скажи, отпусти. Серверы в РФ, оплата в рублях." />
@@ -362,11 +369,11 @@
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-      <a class="btn-secondary" href="pricing.html">Тарифы от&nbsp;399 ₽</a>
+      <a class="btn-secondary" href="pricing.html">Тарифы от&nbsp;299 ₽</a>
     </div>
 
     <div class="hero-meta fade d5">
-      <span>50 диктовок бесплатно</span>
+      <span>30 минут бесплатно</span>
       <span>Серверы в РФ</span>
       <span>Оплата рублями</span>
     </div>
