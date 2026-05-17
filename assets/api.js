@@ -99,11 +99,13 @@ async function apiFetch(path, options = {}) {
   return resp;
 }
 
-async function register(email, password) {
+async function register(email, password, name) {
+  const body = { email, password };
+  if (name) body.name = name;
   const resp = await fetch(`${API_BASE}/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify(body),
   });
   const data = await resp.json().catch(() => ({}));
   if (!resp.ok) {

@@ -447,9 +447,10 @@
     try {
       const data = await VF.me();
       const email = data.user.email;
+      const displayName = (data.user.name && data.user.name.trim()) || nameFromEmail(email);
       document.getElementById('email-line').textContent = email;
       document.getElementById('greeting').innerHTML =
-        'Привет, <em>' + nameFromEmail(email) + '</em>';
+        'Привет, <em>' + displayName + '</em>';
 
       const plan = data.subscription?.plan || 'FREE';
       const status = data.subscription?.status || 'FREE';

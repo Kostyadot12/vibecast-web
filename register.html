@@ -52,6 +52,11 @@
 
     <form id="register-form" novalidate>
       <div class="field">
+        <label for="name">Как тебя зовут</label>
+        <input type="text" id="name" name="name" autocomplete="given-name" maxlength="60" placeholder="Костя" />
+        <span class="field-hint">Будем обращаться по имени. Не обязательно — можно пропустить.</span>
+      </div>
+      <div class="field">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" required autocomplete="email" placeholder="ты@example.com" />
       </div>
@@ -108,6 +113,7 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     clearError();
+    const name = form.name.value.trim();
     const email = form.email.value.trim();
     const password = form.password.value;
     const password2 = form.password2.value;
@@ -132,7 +138,7 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Создаём…';
     try {
-      const result = await VF.register(email, password);
+      const result = await VF.register(email, password, name);
       // Backend теперь возвращает { needsVerification: true, email } — ведём
       // на verify.html где юзер вводит 6-значный код из почты.
       if (result.needsVerification) {
